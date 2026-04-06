@@ -1,0 +1,19 @@
+{
+  "name": "SmartNPC",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "SmartNPC": {
+        "$path": "src",
+        "$className": "ModuleScript"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "SmartNPC_Examples": {
+        "$path": "examples"
+      }
+    }
+  }
+}
