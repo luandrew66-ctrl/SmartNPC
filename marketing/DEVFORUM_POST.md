@@ -91,7 +91,7 @@ The repo includes three complete example scripts:
 
 **Creator Marketplace:** Search "SmartNPC" and install.
 
-**Manual:** Download from [GitHub](https://github.com/YOUR_USERNAME/SmartNPC), import the `.rbxm` into `ReplicatedStorage`.
+**Manual:** Download from [GitHub](https://github.com/luandrew66-ctrl/SmartNPC), import the `.rbxm` into `ReplicatedStorage`.
 
 **Rojo:** Clone the repo and `rojo serve default.project.json`.
 
@@ -106,7 +106,7 @@ Using `gpt-4o-mini` (the recommended default):
 
 SmartNPC is MIT licensed. Use it in any game, commercial or otherwise. Contributions welcome — especially new templates!
 
-**GitHub:** [github.com/YOUR_USERNAME/SmartNPC](https://github.com/YOUR_USERNAME/SmartNPC)
+**GitHub:** [github.com/luandrew66-ctrl/SmartNPC](https://github.com/luandrew66-ctrl/SmartNPC)
 **Discord:** [discord.gg/smartnpc](https://discord.gg/smartnpc)
 
 ---
