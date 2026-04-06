@@ -44,9 +44,9 @@ Use the SmartNPC logo (a brain icon with a speech bubble).
 SmartNPC is an open-source framework that gives Roblox NPCs real AI-powered conversations, memory, and decision-making.
 
 **Quick links:**
-📖 GitHub: https://github.com/YOUR_USERNAME/SmartNPC
-📚 Getting Started: https://github.com/YOUR_USERNAME/SmartNPC/blob/main/docs/GETTING_STARTED.md
-🐛 Report a bug: https://github.com/YOUR_USERNAME/SmartNPC/issues
+📖 GitHub: https://github.com/luandrew66-ctrl/SmartNPC
+📚 Getting Started: https://github.com/luandrew66-ctrl/SmartNPC/blob/main/docs/GETTING_STARTED.md
+🐛 Report a bug: https://github.com/luandrew66-ctrl/SmartNPC/issues
 
 **Getting help:**
 → Post in #help with your issue + code snippet
