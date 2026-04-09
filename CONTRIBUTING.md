@@ -1,3 +1,5 @@
+this project is early — there's a lot to improve and i'd rather get feedback than build in a vacuum.
+
 # Contributing to SmartNPC
 
 Thanks for your interest in contributing! Here's how to get started.
