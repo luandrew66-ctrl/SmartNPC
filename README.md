@@ -1,224 +1,131 @@
-# 🧠 SmartNPC
+# SmartNPC
 
-**Drop-in AI-powered NPCs for Roblox.** Give any NPC a personality, memory, and the ability to hold real conversations with players — in under 10 lines of code.
+AI-powered NPCs for Roblox. They talk, they remember you, they don't say the same 5 lines forever.
 
-SmartNPC connects Roblox's Luau environment to large language models (OpenAI, Anthropic) through a clean behavior tree architecture, so your NPCs can:
+SmartNPC hooks your NPCs up to AI (OpenAI or Anthropic) so they can hold real conversations with players. You describe who the NPC is, and they just... talk. No dialogue trees, no branching scripts.
 
-- 💬 Hold natural conversations with players
-- 🧠 Remember past interactions across sessions
-- 🎭 Follow personality templates you define in simple Lua tables
-- 🌳 Make decisions using behavior trees and finite state machines
-- ⚡ Handle rate limiting, token budgets, and error recovery automatically
+## what it does
 
-## Quick Start
+- NPCs have actual conversations with players (not pre-written lines)
+- they remember past interactions, even across sessions
+- behavior trees so they can make decisions, not just stand there
+- built-in rate limiting so you don't accidentally burn $500 on API calls
+- pre-built templates for common NPCs (quest giver, shopkeeper, guard, etc.)
+- works with OpenAI and Anthropic
+
+## quick start
 
 ```lua
 local SmartNPC = require(game.ReplicatedStorage.SmartNPC)
 
--- Configure your API key (store in a Secret or environment variable!)
 SmartNPC.configure({
-    provider = "openai",          -- or "anthropic"
-    apiKey = "YOUR_API_KEY",      -- use Roblox Secrets in production
-    model = "gpt-4o-mini",        -- cost-effective default
+    provider = "openai",
+    apiKey = "YOUR_API_KEY",
+    model = "gpt-4o-mini",
 })
 
--- Create an AI-powered NPC
-local questGiver = SmartNPC.new(workspace.NPCs.QuestGiver, {
+local npc = SmartNPC.new(workspace.NPCs.QuestGiver, {
     name = "Elder Mira",
-    personality = "A wise village elder who speaks in short, cryptic sentences. "
-                .. "She knows the location of the Lost Temple but only reveals it "
-                .. "to players who have proven their worth.",
-    memory = true,                -- remember past conversations
-    maxTokensPerReply = 150,      -- keep responses game-appropriate
-})
-
--- That's it. Players can now walk up and chat with Elder Mira.
-```
-
-## Installation
-
-### Method 1: Roblox Creator Marketplace
-Search **"SmartNPC"** in the Creator Marketplace and install directly into your experience.
-
-### Method 2: Manual
-1. Download the latest release from [Releases](../../releases)
-2. Import the `SmartNPC.rbxm` file into `ReplicatedStorage`
-3. Place the `SmartNPC_Server` script into `ServerScriptService`
-
-### Method 3: From Source
-1. Clone this repo
-2. Use [Rojo](https://rojo.space/) to sync into Roblox Studio:
-   ```bash
-   rojo serve default.project.json
-   ```
-
-## Architecture
-
-```
-SmartNPC/
-├── SmartNPCController    -- Main API / entry point
-├── Core/
-│   ├── BehaviorTree      -- Decision-making framework
-│   ├── StateMachine      -- NPC state management (Idle, Talking, Acting)
-│   └── ProximityManager  -- Detects nearby players, manages conversations
-├── AI/
-│   ├── LLMBridge         -- HTTPService wrapper for OpenAI/Anthropic APIs
-│   ├── PromptBuilder     -- Constructs system + context prompts
-│   └── ResponseParser    -- Extracts actions/dialogue from LLM responses
-├── Memory/
-│   ├── ConversationLog   -- Per-player conversation history
-│   └── MemoryStore       -- DataStore-backed persistent memory
-├── Templates/
-│   ├── QuestGiver        -- Pre-built personality template
-│   ├── Shopkeeper        -- Pre-built personality template
-│   └── Guard             -- Pre-built personality template
-└── Utils/
-    ├── RateLimiter       -- Token bucket rate limiting
-    ├── TokenCounter      -- Approximate token counting for budgets
-    └── Logger            -- Debug logging with levels
-```
-
-## Features
-
-### 🌳 Behavior Trees
-NPCs don't just talk — they *decide*. The built-in behavior tree system lets you define complex decision logic:
-
-```lua
-local tree = BehaviorTree.new({
-    type = "selector",
-    children = {
-        { type = "sequence", children = {
-            { type = "condition", check = "isPlayerNearby" },
-            { type = "condition", check = "hasNotGreeted" },
-            { type = "action", run = "greetPlayer" },
-        }},
-        { type = "sequence", children = {
-            { type = "condition", check = "isInConversation" },
-            { type = "action", run = "continueConversation" },
-        }},
-        { type = "action", run = "patrol" },
-    },
-})
-```
-
-### 🧠 Persistent Memory
-NPCs remember individual players across sessions using Roblox DataStores:
-
-```lua
--- Elder Mira remembers that Player1 already found the sword
--- Next time Player1 visits, she picks up where they left off
-local npc = SmartNPC.new(model, {
+    personality = "A wise village elder with a sharp tongue. Helpful if you're polite, roasts you if you're not.",
     memory = true,
-    memoryLength = 20,    -- remember last 20 exchanges per player
-    memoryPersist = true, -- save to DataStore across sessions
 })
+
+-- thats it. players walk up and talk to her.
 ```
 
-### 🎭 Personality Templates
-Use built-in templates or create your own:
+## install
+
+**Creator Marketplace:** search "SmartNPC" and add it to your game.
+
+**Manual:** grab the latest release from [releases](../../releases), drop the `.rbxm` into ReplicatedStorage.
+
+**From source (with Rojo):**
+```bash
+git clone https://github.com/luandrew66-ctrl/SmartNPC.git
+rojo serve default.project.json
+```
+
+## how it works
+
+the framework has a few main pieces:
+
+**SmartNPCController** — the main module. you interact with this.
+
+**BehaviorTree** — lets NPCs make decisions. patrol, detect player, greet, talk, go back to patrolling. customizable.
+
+**StateMachine** — manages what the NPC is doing (idle, talking, acting, cooldown).
+
+**LLMBridge** — handles the HTTP requests to OpenAI/Anthropic. retries, error handling, all that.
+
+**ConversationLog** — stores chat history per player so the NPC remembers what you talked about.
+
+**MemoryStore** — saves memories to Roblox DataStores so NPCs remember players even after they leave and come back.
+
+**RateLimiter** — prevents your game from sending too many API requests. configurable per-NPC and globally.
+
+## templates
+
+don't want to write a personality from scratch? use a template:
 
 ```lua
--- Built-in template
-local shopkeeper = SmartNPC.new(model, SmartNPC.Templates.Shopkeeper({
-    shopName = "Ye Olde Potions",
-    inventory = {"Health Potion", "Mana Elixir", "Speed Brew"},
-    priceRange = "10-500 gold",
+-- quest giver that tracks progress
+local npc = SmartNPC.new(model, SmartNPC.Templates.QuestGiver({
+    questName = "The Lost Amulet",
+    reward = "500 gold",
 }))
 
--- Custom template
-local custom = SmartNPC.new(model, {
-    personality = "A grumpy dwarf blacksmith...",
-    conversationRules = {
-        "Never reveal prices until asked twice",
-        "Insult the player's weapon at least once",
-        "Offer a discount if the player compliments your beard",
-    },
-})
+-- shopkeeper that haggles
+local shop = SmartNPC.new(model, SmartNPC.Templates.Shopkeeper({
+    shopName = "Ye Olde Potions",
+    inventory = {"Health Potion", "Mana Elixir", "Speed Brew"},
+}))
+
+-- guard that questions strangers
+local guard = SmartNPC.new(model, SmartNPC.Templates.Guard({
+    location = "the castle gates",
+    faction = "the Royal Guard",
+}))
 ```
 
-### ⚡ Rate Limiting & Cost Control
-Built-in protections prevent runaway API costs:
+there's also Narrator and Companion templates. check [the docs](docs/TEMPLATES.md) for all of them.
 
-```lua
-SmartNPC.configure({
-    rateLimits = {
-        requestsPerMinute = 20,       -- per-NPC limit
-        globalRequestsPerMinute = 60, -- server-wide limit
-        tokensPerMinute = 10000,      -- token budget
-    },
-    fallbackResponse = "Hmm, let me think about that...",
-    maxConversationLength = 30,       -- auto-end long conversations
-})
-```
+## config options
 
-### 🔌 Multi-Provider Support
-Switch between AI providers with one line:
+`SmartNPC.configure()` — call once per server:
 
-```lua
--- OpenAI
-SmartNPC.configure({ provider = "openai", model = "gpt-4o-mini" })
+- `provider` — "openai" or "anthropic"
+- `apiKey` — your API key
+- `model` — which model to use (default: gpt-4o-mini)
+- `rateLimits` — requests per minute, token budgets, etc
+- `debug` — true/false for logging
 
--- Anthropic
-SmartNPC.configure({ provider = "anthropic", model = "claude-sonnet-4-20250514" })
-```
+`SmartNPC.new(model, config)` — create an NPC:
 
-## API Reference
+- `name` — what the NPC is called
+- `personality` — describe who they are (this is the system prompt basically)
+- `memory` — true/false, remember past conversations
+- `memoryLength` — how many exchanges to remember (default 10)
+- `memoryPersist` — save to DataStore across sessions
+- `maxTokensPerReply` — keep responses short (default 200)
+- `conversationRules` — list of rules the NPC has to follow
+- `proximityRadius` — how close a player needs to be (default 15 studs)
 
-### `SmartNPC.configure(options)`
-Set global configuration. Call once in a server script.
+## cost
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `provider` | string | `"openai"` | AI provider: `"openai"` or `"anthropic"` |
-| `apiKey` | string | required | API key for the provider |
-| `model` | string | `"gpt-4o-mini"` | Model identifier |
-| `rateLimits` | table | see above | Rate limiting configuration |
-| `debug` | boolean | `false` | Enable debug logging |
+gpt-4o-mini is cheap. like $0.001 per conversation. if you have 100 players each having 5 conversations, thats maybe $0.50/day. the rate limiter is there so it never runs away on you.
 
-### `SmartNPC.new(npcModel, config)`
-Create an AI-powered NPC.
+## examples
 
-| Config | Type | Default | Description |
-|--------|------|---------|-------------|
-| `name` | string | Model name | Display name for the NPC |
-| `personality` | string | required | Personality description / system prompt |
-| `memory` | boolean | `false` | Enable conversation memory |
-| `memoryLength` | number | `10` | Max exchanges to remember |
-| `memoryPersist` | boolean | `false` | Persist memory to DataStore |
-| `maxTokensPerReply` | number | `200` | Max tokens in NPC responses |
-| `conversationRules` | table | `{}` | List of behavioral rules |
-| `conversationTimeout` | number | `30` | Seconds of silence before ending conversation |
-| `proximityRadius` | number | `15` | Studs radius for player detection |
+check the [examples folder](examples/) for full working scripts:
 
-### `SmartNPC.Templates`
-Pre-built personality templates. See [Templates documentation](docs/TEMPLATES.md).
+- **quest giver** — gives quests, tracks progress, remembers what hints they already gave you
+- **shop npc** — negotiates prices, recommends items
+- **adaptive enemy** — boss that taunts you differently based on how the fight is going
 
-## Examples
+## contributing
 
-- **[Quest Giver](examples/quest-giver/)** — RPG NPC that tracks quest progress and gives contextual hints
-- **[Shop NPC](examples/shop-npc/)** — Merchant that negotiates prices and recommends items
-- **[Adaptive Enemy](examples/adaptive-enemy/)** — Boss that taunts players and adapts dialogue to the fight
+PRs welcome. especially new templates — if you make a cool NPC archetype, submit it. see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Performance
+## license
 
-SmartNPC is designed for production Roblox games:
-
-- **Queued requests** — Never overwhelms HTTPService limits
-- **Approximate token counting** — Tracks costs before sending requests
-- **Graceful degradation** — Falls back to scripted responses if API is unavailable
-- **Minimal memory footprint** — Conversation history is pruned automatically
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. All contributions welcome — bug fixes, new templates, documentation, and features.
-
-## License
-
-MIT License. See [LICENSE](LICENSE).
-
-## Links
-
-- [📖 Full Documentation](docs/)
-- [🐛 Report a Bug](../../issues)
-- [💡 Request a Feature](../../issues)
-- [💬 Discord Community](https://discord.gg/smartnpc)
+MIT. do whatever you want with it.
