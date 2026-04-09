@@ -30,7 +30,7 @@ local npc = SmartNPC.new(workspace.NPCs.QuestGiver, {
     memory = true,
 })
 
--- thats it. players walk up and talk to her.
+-- players walk up and start talking to her.
 ```
 
 ## install
@@ -112,7 +112,7 @@ there's also Narrator and Companion templates. check [the docs](docs/TEMPLATES.m
 
 ## cost
 
-gpt-4o-mini is cheap. like $0.001 per conversation. if you have 100 players each having 5 conversations, thats maybe $0.50/day. the rate limiter is there so it never runs away on you.
+gpt-4o-mini is cheap. like $0.001 per conversation. if you have 100 players each having 5 conversations, thats maybe $0.50/day. the rate limiter is there so it never runs away on you. still figuring out ways to bring this down. considering local fallback responses for common questions to reduce API calls.
 
 ## examples
 
