@@ -23,7 +23,7 @@ local globalState = {
 function RateLimiter.new(config: RateLimitConfig?)
     local self = setmetatable({}, RateLimiter)
     
-    self._maxRequestsPerMin = (config and config.requestsPerMinute) or 20
+    self._maxRequestsPerMin = (config and config.requestsPerMinute) or 15
     self._globalMaxRequestsPerMin = (config and config.globalRequestsPerMinute) or 60
     self._maxTokensPerMin = (config and config.tokensPerMinute) or 10000
     
