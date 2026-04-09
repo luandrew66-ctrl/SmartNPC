@@ -52,7 +52,7 @@ function LLMBridge.new(config: LLMConfig)
     self._maxTokens = config.maxTokens or 200
     self._temperature = config.temperature or 0.7
     self._baseUrl = config.baseUrl or ENDPOINTS[self._provider]
-    self._retries = 2
+    self._retries = 3
     self._retryDelay = 1
     
     return self
